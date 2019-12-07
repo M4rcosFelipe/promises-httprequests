@@ -1,30 +1,30 @@
+const object={
 
-const listEl=document.querySelector("#lista")
-const inputEl=document.querySelector("input[name=username]")
-const botao=document.querySelector("#botao")
-
-var repos=[]
-
-botao.onclick=clicar
+listEl:document.querySelector("#lista"),
+inputEl:document.querySelector("input[name=username]"),
+botao:document.querySelector("#botao"),
+repos:[],
 
 
-function clicar(){
+
+
+clicar(){
     
-    setSpan('carregando...')
-    adicionar()
+    this.setSpan('carregando...')
+    this.adicionar()
         .then(()=>{
-            setSpan()
-            renderRepos()
+            this.setSpan()
+            this.renderRepos()
         })
         .catch(erro=>{
-            setSpan(erro)
+            this.setSpan(erro)
             console.log(erro)})
-}
+},
 
 
-function adicionar(){
+adicionar(){
 
-    let user=inputEl.value
+    let user=this.inputEl.value
     let URL=`https://api.github.com/users/${user}`
     console.log(URL)
     return new Promise((resolve,reject)=>{
@@ -44,19 +44,19 @@ function adicionar(){
             }
         }
     })
-}
+},
 
 
-function renderRepos(){
-    listEl.innerHTML=""
-    inputEl.value=""
-    for(let i=0;i<repos.length;i++){
-        var listItem=createListItem(repos[i])
-        listEl.appendChild(listItem)
+renderRepos(){
+    this.listEl.innerHTML=""
+    this.inputEl.value=""
+    for(let i=0;i<this.repos.length;i++){
+        var listItem=this.createListItem(this.repos[i])
+        this.listEl.appendChild(listItem)
     }
-}
+},
 
-function createListItem(repo){
+createListItem(repo){
     let li=document.createElement("li")
     let link=document.createElement("a")
     let strong=document.createElement("strong")
@@ -76,12 +76,13 @@ function createListItem(repo){
     li.appendChild(link)
 
     return li
-}
+},
 
-function setSpan(message=""){
+setSpan(message=""){
     let span=document.querySelector(".temp_span")
     span.innerText=message
-}
+},
 
+}//end object
 
-
+botao.onclick=object.clicar
