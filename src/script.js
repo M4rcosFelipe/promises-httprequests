@@ -36,7 +36,7 @@ adicionar(){
         xhr.onreadystatechange=function(){
             if(xhr.readyState===4){
                 if(xhr.status===200){
-                    repos.push(JSON.parse(xhr.responseText))
+                    this.repos.push(JSON.parse(xhr.responseText))
                     resolve()
                 }else{
                     reject("O repositório não existe")
@@ -85,4 +85,4 @@ setSpan(message=""){
 
 }//end object
 
-botao.onclick=object.clicar
+object.botao.onclick=object.clicar
