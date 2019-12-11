@@ -9,21 +9,19 @@ ul{
 }
 li{
     display:grid;
-    grid-template-rows:35px 35px;
-    grid-template-columns:70px 1fr;
-    align-items: center;
+    grid-template-rows:min-content,min-content;
+    grid-template-columns:min-content min-content;
+    justify-content:start;
+    align-items:center;
     margin-top:10px;
+    grid-column-gap:5px;
 
 }
-strong{
-    font-size:15pt;
-    display:block;
 
-    
-}
 strong{
     grid-row:1;
     grid-column:2;
+    font-size:15pt;
 }
 a{
     grid-row:2;
