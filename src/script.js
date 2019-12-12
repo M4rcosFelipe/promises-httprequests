@@ -29,7 +29,7 @@ const object={
 
             xhr.open("GET",URL)
             xhr.send(null)
-            that=this
+            self=this
             xhr.onreadystatechange=function(){
 
                 if(xhr.readyState===4){
@@ -37,7 +37,7 @@ const object={
                        
                         var resposta=(JSON.parse(xhr.responseText))
                         
-                        const is=that.verify(resposta.login,that.alredyAdd)
+                        const is=self.verify(resposta.login,self.alredyAdd)
                        
 
                         if(is===true) {
@@ -45,9 +45,9 @@ const object={
                             return
 
                         }else{
-                            that.repos.push(resposta)
-                            that.alredyAdd.push(resposta.login)
-                            resolve()
+                        self.repos.push(resposta)
+                        self.alredyAdd.push(resposta.login)
+                        resolve()
                         }
                     }else{
                         reject("O repositório não existe")
@@ -95,7 +95,7 @@ const object={
     },
 
 
-    verify(username,list){
+    verify(username,list){  
         let alredy=list.find(item=>item===username)
         return alredy?true:false 
     },
