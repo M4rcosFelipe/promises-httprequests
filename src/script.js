@@ -6,102 +6,75 @@ const object={
     repos:[],
     alredyAdd:[],
 
-    clicar(){
-        this.setSpan("Carregando...")
-        this.adicionar()
-            .then((message)=>{
-                this.setSpan(message)
-                this.renderRepos()
-            })
-            .catch(erro=>{  
-                this.setSpan(erro)
-            })
-    },
+async adicionar(){
+    this.setSpan("Carregando...")
 
-    
+    let userName=this.inputEl.value
+    let URL=`https://api.github.com/users/${userName}`
+    const response = await fetch(URL)
+    const resposta = await response.json()
 
-    adicionar(){
-        let user=this.inputEl.value
-        let URL=`https://api.github.com/users/${user}`
+    if(response.status!==200){
+        this.setSpan("O repositório não existe")
+        return
+    }
 
-        return new Promise((resolve,reject)=>{
-            const xhr=new XMLHttpRequest()
+    const is=this.verify(resposta.login,this.alredyAdd)
 
-            xhr.open("GET",URL)
-            xhr.send(null)
-            self=this
-            xhr.onreadystatechange=function(){
+    if(is===true) {
+        this.setSpan("Repositório já adicionado")
+    }else{
+        this.repos.push(resposta)
+        this.alredyAdd.push(resposta.login)
+        this.setSpan()
+        this.renderRepos()
+    }
+},
 
-                if(xhr.readyState===4){
-                    if(xhr.status===200){
-                       
-                        var resposta=(JSON.parse(xhr.responseText))
-                        
-                        const is=self.verify(resposta.login,self.alredyAdd)
-                       
+renderRepos(){
+    this.listEl.innerHTML=""
+    this.inputEl.value=""
+    for(let i=0;i<this.repos.length;i++){
+        var listItem=this.createListItem(this.repos[i])
+        this.listEl.appendChild(listItem)
+    }
+},
 
-                        if(is===true) {
-                            resolve("repositório ja adicionado")
-                            return
+createListItem(repo){
+    let li=document.createElement("li")
+    let link=document.createElement("a")
+    let strong=document.createElement("strong")
+    let img=document.createElement("img")
 
-                        }else{
-                        self.repos.push(resposta)
-                        self.alredyAdd.push(resposta.login)
-                        resolve()
-                        }
-                    }else{
-                        reject("O repositório não existe")
-                    }
-                }
-            }
-        })
-    },
+    let linkContent=document.createTextNode("Acesse")
+    let strongContent=document.createTextNode(repo.login)
 
+    img.setAttribute("src",repo.avatar_url)
+    strong.appendChild(strongContent)
+    link.setAttribute("href",repo.html_url)
+    link.setAttribute("target","_blank")
+    link.appendChild(linkContent)
 
-    renderRepos(){
-        this.listEl.innerHTML=""
-        this.inputEl.value=""
-        for(let i=0;i<this.repos.length;i++){
-            var listItem=this.createListItem(this.repos[i])
-            this.listEl.appendChild(listItem)
-        }
-    },
+    li.appendChild(img)
+    li.appendChild(strong)
+    li.appendChild(link)
 
-    createListItem(repo){
-        let li=document.createElement("li")
-        let link=document.createElement("a")
-        let strong=document.createElement("strong")
-        let img=document.createElement("img")
+    return li
+},
 
-        let linkContent=document.createTextNode("Acesse")
-        let strongContent=document.createTextNode(repo.login)
-
-        img.setAttribute("src",repo.avatar_url)
-        strong.appendChild(strongContent)
-        link.setAttribute("href",repo.html_url)
-        link.setAttribute("target","_blank")
-        link.appendChild(linkContent)
-
-        li.appendChild(img)
-        li.appendChild(strong)
-        li.appendChild(link)
-
-        return li
-    },
-
-    setSpan(message=""){
-        let span=document.querySelector(".temp_span")
-        span.innerText=message
-    },
+setSpan(message=""){
+    let span=document.querySelector(".temp_span")
+    span.innerText=message
+},
 
 
-    verify(username,list){  
-        let alredy=list.find(item=>item===username)
-        return alredy?true:false 
-    },
+verify(username,list){  
+    let alredy=list.find(item=>item===username)
+    return alredy?true:false 
+},
 
 
 }//end object
 
 
-object.botao.onclick=object.clicar.bind(object)
+object.botao.onclick=object.adicionar.bind(object)
